@@ -9,13 +9,41 @@ def signal_table(df_stock):
     # Add the typical price
     df_stock['Typical_Price'] = (df_stock['Close'] + df_stock['Low'] + df_stock['High'])/3
     
-    # 
-    
     # Adding bollinger bands indicators to table
     for window_size in [7, 20, 30, 60]:
         bollinger_bands(df_stock, window=window_size, deviation=2)
         encoding[index] = f"bb_{window_size}_bbli"
         index += 1
+
+    # Add sma cross
+    df_stock["sma_cross"]=sma_cross(df_stock, 50, 200)
+    encoding[index] = f"sma_cross"
+    index += 1
+
+    # # Add price sma cross
+    # df_stock["price_sma_cross"]=price_sma_cross(df_stock, 20)
+    # encoding[index] = f"price_sma_cross"
+    # index += 1
+
+    # # Add price ema cross
+    # df_stock["price_ema_cross"]=price_ema_cross(df_stock,20, 50)
+    # encoding[index] = f"price_ema_cross"
+    # index += 1
+
+    # # Add price bb cross
+    # df_stock["price_bb_cross"]=price_bb_cross(df_stock,20,2)
+    # encoding[index] = f"price_bb_cross"
+    # index += 1
+
+    # # Add adx
+    # df_stock["adx"]=adx(df_stock,25,14)
+    # encoding[index] = f"adx"
+    # index += 1
+
+    # # Add macd
+    # df_stock["macd"]=macd(df_stock,26,12,9)
+    # encoding[index] = f"macd"
+    # index += 1
     
     return df_stock, encoding
 

@@ -6,7 +6,7 @@ from geneticalgo.trading.objective import fitness
 import pandas as pd
 
 
-df_sp=pd.read_csv("data/2021-12-06_Top25 SP500 daily.csv")
+df_sp=pd.read_csv("../data/2021-12-06_Top25 SP500 daily.csv")
 # Path for running code via notebook
 # df_sp=pd.read_csv("../data/2021-12-06_Top25 SP500 daily.csv")
 df_sp["datadate"] = pd.to_datetime(df_sp["datadate"].astype(str), format='%Y%m%d')
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     # define the total iterations
     n_iter = 5
     # bits
-    n_bits = 4
+    n_bits = 5
     # define the population size
     n_pop = 10
     # crossover rate
