@@ -24,11 +24,14 @@ def buy_signal(index, df_signal, indicators):
     
     signal = True
     
-    for ind in indicators:
-        if df_signal.iloc[index][ind] != 1.0:
-            signal = False
-            
-            break
+    if len(indicators) != 0:
+        for ind in indicators:
+            if df_signal.iloc[index][ind] != 1.0:
+                signal = False
+                
+                break
+    else:
+        signal = False
             
     return signal
     
@@ -52,9 +55,12 @@ def fitness(genome, df_stock, timeframe):
     fitness = 0
     
     df_stock, encoding = signal_table(df_stock)
-    
-    if len(genome) != len(encoding):
-        raise Exception("The length of the genome and the encoding has to be equal!")
+
+    length_genome = len(genome)
+    length_encoding = len(encoding)
+
+    if length_genome != length_encoding:
+        raise Exception(f"The length of the genome ({length_genome}) and the encoding ({length_encoding}) has to be equal!")
     
     indicators = resolve_genome(genome, encoding)
     
@@ -103,5 +109,7 @@ def fitness(genome, df_stock, timeframe):
             list_signal.append(None)
                 
         list_return.append(total_return)
+
+    print(f"Genome: {genome} with total return: {total_return}")
     
     return total_return, list_return, list_signal
