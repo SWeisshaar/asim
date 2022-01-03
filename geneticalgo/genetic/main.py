@@ -7,6 +7,8 @@ import pandas as pd
 
 
 df_sp=pd.read_csv("data/2021-12-06_Top25 SP500 daily.csv")
+# Path for running code via notebook
+# df_sp=pd.read_csv("../data/2021-12-06_Top25 SP500 daily.csv")
 df_sp["datadate"] = pd.to_datetime(df_sp["datadate"].astype(str), format='%Y%m%d')
 df_sp = df_sp[["datadate", "conm", "tic", "prcod", "prccd", "prchd", "prcld", "cshtrd"]].rename(columns={"prcod": "Open", "prccd": "Close", "prchd": "High", "prcld": "Low", "cshtrd": "Volume"})
 
