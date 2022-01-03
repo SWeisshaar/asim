@@ -2,11 +2,28 @@
 # genetic algorithm search of the one max optimization problem
 from numpy.random import randint
 from numpy.random import rand
+from geneticalgo.trading.objective import fitness
+import pandas as pd
+
+
+df_sp=pd.read_csv("../data/2021-12-06_Top25 SP500 daily.csv")
+df_sp["datadate"] = pd.to_datetime(df_sp["datadate"].astype(str), format='%Y%m%d')
+df_sp = df_sp[["datadate", "conm", "tic", "prcod", "prccd", "prchd", "prcld", "cshtrd"]].rename(columns={"prcod": "Open", "prccd": "Close", "prchd": "High", "prcld": "Low", "cshtrd": "Volume"})
 
 
 # objective function
 def onemax(x):
 	return -sum(x)
+
+
+def net_return(x):
+	
+	df_stock = df_sp[df_sp["tic"]=="AAL"]
+	df_stock = df_stock.drop(columns=["conm", "tic"])
+	df_stock = df_stock.sort_values(by="datadate")
+	df_stock.reset_index(inplace=True, drop=True)
+	
+	return fitness(x, df_stock, "timeframe")[0]
 
 
 # tournament selection
