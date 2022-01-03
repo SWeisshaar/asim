@@ -19,6 +19,8 @@ def onemax(x):
 
 
 def net_return(x):
+
+	# TODO Random stock and timeframe
 	
 	df_stock = df_sp[df_sp["tic"]=="AAL"]
 	df_stock = df_stock.drop(columns=["conm", "tic"])
