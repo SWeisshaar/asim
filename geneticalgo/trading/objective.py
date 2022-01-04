@@ -20,15 +20,24 @@ def signal_table(df_stock):
     encoding[index] = f"sma_cross"
     index += 1
 
-    # # Add price sma cross
-    # df_stock["price_sma_cross"]=price_sma_cross(df_stock, 20)
-    # encoding[index] = f"price_sma_cross"
-    # index += 1
+    # Add price sma cross
+    for window_size in [14, 20, 40, 60, 100]:
+        df_stock[f"price_sma_{window_size}_cross"]=price_sma_cross(df_stock, window_size)
+        encoding[index] = f"price_sma_{window_size}_cross"
+        index += 1
 
-    # # Add price ema cross
-    # df_stock["price_ema_cross"]=price_ema_cross(df_stock,20, 50)
-    # encoding[index] = f"price_ema_cross"
-    # index += 1
+    # Add price ema cross
+    df_stock["price_ema_20_cross"]=price_ema_cross(df_stock,20, 20)
+    encoding[index] = f"price_ema_20_cross"
+    index += 1
+
+    df_stock["price_ema_20_50_cross"]=price_ema_cross(df_stock,20, 50)
+    encoding[index] = f"price_ema_20_50_cross"
+    index += 1
+
+    df_stock["price_ema_50_cross"]=price_ema_cross(df_stock,50, 50)
+    encoding[index] = f"price_ema_50_cross"
+    index += 1
 
     # # Add price bb cross
     # df_stock["price_bb_cross"]=price_bb_cross(df_stock,20,2)
@@ -78,17 +87,7 @@ def resolve_genome(genome, encoding):
     return list
 
 
-def fitness(genome, df_stock, timeframe):
-    
-    fitness = 0
-    
-    df_stock, encoding = signal_table(df_stock)
-
-    length_genome = len(genome)
-    length_encoding = len(encoding)
-
-    if length_genome != length_encoding:
-        raise Exception(f"The length of the genome ({length_genome}) and the encoding ({length_encoding}) has to be equal!")
+def fitness(genome, df_signal, encoding):
     
     indicators = resolve_genome(genome, encoding)
     
@@ -103,21 +102,21 @@ def fitness(genome, df_stock, timeframe):
     
     # TODO incorporate the timeframe
     
-    for i in df_stock.index:
+    for i in df_signal.index:
         
-        if((buy_signal(i, df_stock, indicators)) & (position == False)):
+        if((buy_signal(i, df_signal, indicators)) & (position == False)):
         
             position = True
             
             transactions += 1
             
-            price_buy = df_stock.iloc[i]["Typical_Price"]
+            price_buy = df_signal.iloc[i]["Typical_Price"]
             
             list_signal.append(price_buy)
             
         elif(position == True):
             
-            net_return = df_stock.iloc[i]["Typical_Price"] - price_buy
+            net_return = df_signal.iloc[i]["Typical_Price"] - price_buy
             
             percentage = 0.05
             

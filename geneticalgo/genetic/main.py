@@ -3,6 +3,7 @@
 from numpy.random import randint
 from numpy.random import rand
 from geneticalgo.trading.objective import fitness
+from geneticalgo.trading.objective import signal_table
 import pandas as pd
 
 
@@ -11,6 +12,12 @@ df_sp=pd.read_csv("../data/2021-12-06_Top25 SP500 daily.csv")
 # df_sp=pd.read_csv("../data/2021-12-06_Top25 SP500 daily.csv")
 df_sp["datadate"] = pd.to_datetime(df_sp["datadate"].astype(str), format='%Y%m%d')
 df_sp = df_sp[["datadate", "conm", "tic", "prcod", "prccd", "prchd", "prcld", "cshtrd"]].rename(columns={"prcod": "Open", "prccd": "Close", "prchd": "High", "prcld": "Low", "cshtrd": "Volume"})
+df_stock = df_sp[df_sp["tic"]=="AAL"]
+df_stock = df_stock.drop(columns=["conm", "tic"])
+df_stock = df_stock.sort_values(by="datadate")
+df_stock.reset_index(inplace=True, drop=True)
+
+df_stock, encoding = signal_table(df_stock)
 
 
 # objective function
@@ -18,16 +25,17 @@ def onemax(x):
 	return -sum(x)
 
 
-def net_return(x):
+def net_return(genome):
 
 	# TODO Random stock and timeframe
 	
-	df_stock = df_sp[df_sp["tic"]=="AAL"]
-	df_stock = df_stock.drop(columns=["conm", "tic"])
-	df_stock = df_stock.sort_values(by="datadate")
-	df_stock.reset_index(inplace=True, drop=True)
-	
-	return fitness(x, df_stock, "timeframe")[0]
+	length_genome = len(genome)
+	length_encoding = len(encoding)
+
+	if length_genome != length_encoding:
+		raise Exception(f"The length of the genome ({length_genome}) and the encoding ({length_encoding}) has to be equal!")
+
+	return fitness(genome, df_stock, encoding)[0]
 
 
 # tournament selection
