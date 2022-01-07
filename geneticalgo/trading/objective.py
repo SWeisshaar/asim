@@ -60,13 +60,19 @@ def signal_table(df_stock):
 def buy_signal(index, df_signal, indicators):
     
     signal = True
+    counter = 0
+    number_of_indicators = len(indicators)
+    percentage = 0.7
     
-    if len(indicators) != 0:
+    if number_of_indicators != 0:
         for ind in indicators:
             if df_signal.iloc[index][ind] != 1.0:
-                signal = False
-                
-                break
+                counter += 1
+
+                if counter > ((1 - percentage) * number_of_indicators):
+                    signal = False
+                    
+                    break
     else:
         signal = False
             
