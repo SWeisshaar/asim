@@ -103,7 +103,7 @@ def genetic_algorithm(objective, n_bits, n_iter, n_pop, r_cross, r_mut):
 				children.append(c)
 		# replace population
 		pop = children
-	return [best, best_eval]
+	return [best, best_eval, encoding]
 
 
 if __name__ == "__main__":
