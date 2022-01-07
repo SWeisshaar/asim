@@ -26,13 +26,14 @@ def signal_table(df_stock):
         encoding[index] = f"price_sma_{window_size}_cross"
         index += 1
 
+    # Add ema cross
+    df_stock["price_ema_20_50_cross"]=price_ema_cross(df_stock,20, 50)
+    encoding[index] = f"price_ema_20_50_cross"
+    index += 1
+
     # Add price ema cross
     df_stock["price_ema_20_cross"]=price_ema_cross(df_stock,20, 20)
     encoding[index] = f"price_ema_20_cross"
-    index += 1
-
-    df_stock["price_ema_20_50_cross"]=price_ema_cross(df_stock,20, 50)
-    encoding[index] = f"price_ema_20_50_cross"
     index += 1
 
     df_stock["price_ema_50_cross"]=price_ema_cross(df_stock,50, 50)
