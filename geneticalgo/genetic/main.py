@@ -2,7 +2,7 @@
 # genetic algorithm search of the one max optimization problem
 from numpy.random import randint
 from numpy.random import rand
-from geneticalgo.trading.objective import fitness
+from geneticalgo.trading.objective import net_return, stock_return
 from geneticalgo.trading.objective import signal_table
 import pandas as pd
 
@@ -25,7 +25,7 @@ def onemax(x):
 	return -sum(x)
 
 
-def net_return(genome):
+def fitness(genome):
 
 	# TODO Random stock and timeframe
 	
@@ -35,7 +35,7 @@ def net_return(genome):
 	if length_genome != length_encoding:
 		raise Exception(f"The length of the genome ({length_genome}) and the encoding ({length_encoding}) has to be equal!")
 
-	return fitness(genome, df_stock, encoding)[0]
+	return stock_return(genome, df_stock, encoding)[0]
 
 
 # tournament selection

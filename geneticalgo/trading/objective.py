@@ -103,7 +103,81 @@ def resolve_genome(genome, encoding):
     return list
 
 
-def fitness(genome, df_signal, encoding):
+def stock_return(genome, df_signal, encoding):
+    indicators = resolve_genome(genome, encoding)
+    
+    list_return = []
+    list_signal = []
+
+    price_buy = 0
+
+    position = 0
+    position_size = 100
+    portfolio = 150
+
+    transactions = 0
+    
+    # TODO incorporate the timeframe
+    
+    for i in df_signal.index:
+
+        
+        if((buy_signal(i, df_signal, indicators)) & (position == 0)):
+        
+            if portfolio >= position_size:
+                position = position_size
+            else:
+                position = portfolio
+
+            portfolio -= position
+
+            transactions += 1
+            
+            price_buy = df_signal.iloc[i]["Typical_Price"]
+            
+            list_signal.append(price_buy)
+            
+        elif(position > 0):
+            
+            stock_return = (df_signal.iloc[i]["Typical_Price"] - price_buy)/price_buy
+            
+            if not(stock_return < -1):
+                position_return = position * stock_return
+            else: 
+                position_return = 0
+
+            p = 0.05
+            
+            # Close position if it makes 10 % loss or profit
+            if((position_return < -(p * price_buy)) | 
+                (position_return > (p * price_buy))):
+                
+                transactions += 1
+
+                portfolio = portfolio + position + position_return
+
+                position = 0
+ 
+            list_signal.append(None)
+
+            if (i == (len(df_signal.index) - 1)) & (position > 0):
+                transactions += 1
+
+                portfolio = portfolio + position + position_return
+
+                position = 0
+            
+        else:
+            list_signal.append(None)
+                
+        list_return.append(position)
+
+    print(f"Genome: {genome} with final porfolio value: {portfolio}")
+    
+    return portfolio, list_return, list_signal
+
+
+def net_return(genome, df_signal, encoding):
     
     indicators = resolve_genome(genome, encoding)
     
@@ -134,11 +208,11 @@ def fitness(genome, df_signal, encoding):
             
             net_return = df_signal.iloc[i]["Typical_Price"] - price_buy
             
-            percentage = 0.05
+            p = 0.05
             
             # Close position if it makes 10 % loss or profit
-            if((net_return < -(percentage * price_buy)) |
-               (net_return > (percentage * price_buy))):
+            if((net_return < -(p * price_buy)) | 
+                (net_return > (p * price_buy))):
                 
                 position = False
                 
