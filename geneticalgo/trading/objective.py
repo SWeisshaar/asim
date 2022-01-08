@@ -172,7 +172,8 @@ def stock_return(genome, df_signal, encoding):
                 
         list_return.append(position)
 
-    print(f"Genome: {genome} with final porfolio value: {portfolio}")
+    if portfolio > 150:
+        print(f"Genome: {genome} with final porfolio value: {portfolio}")
     
     return portfolio, list_return, list_signal
 
