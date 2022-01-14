@@ -121,7 +121,6 @@ def stock_return(genome, df_signal, encoding):
     
     for i in df_signal.index:
 
-        
         if((buy_signal(i, df_signal, indicators)) & (position == 0)):
         
             if portfolio >= position_size:
@@ -173,7 +172,7 @@ def stock_return(genome, df_signal, encoding):
         list_return.append(position)
 
     if portfolio > 150:
-        print(f"Genome: {genome} with final porfolio value: {portfolio}")
+        print(f"Genome: {genome} with final porfolio value: {portfolio}, position: {position} and number of trades: {transactions}")
     
     return portfolio, list_return, list_signal
 
