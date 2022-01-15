@@ -41,7 +41,7 @@ def price_sma_cross(df_stock, sma1):
     df_stock[f"sma_{sma1}"]= ta.trend.SMAIndicator(df_stock["Close"], window=sma1, fillna=True).sma_indicator()
     for i in df_stock.index:     
         if i-1 in df_stock.index:
-            if ((df_stock.iloc[i-1][f"sma_{sma1}"] > df_stock.iloc[i-1]["Close"]) & (df_stock.iloc[i-1][f"sma_{sma1}"] < df_stock.iloc[i]["Open"])):
+            if ((df_stock.iloc[i-1][f"sma_{sma1}"] > df_stock.iloc[i-1]["Close"]) & (df_stock.iloc[i][f"sma_{sma1}"] < df_stock.iloc[i]["Open"])):
                 signal_list.append(1.0)  
             else:
                 signal_list.append(0)
@@ -58,7 +58,7 @@ def price_ema_cross(df_stock, ema1,ema2):
     df_stock[f"ema_{ema2}"]= ta.trend.EMAIndicator(df_stock["Close"], window=ema2, fillna=True).ema_indicator()
     for i in df_stock.index:     
         if i-1 in df_stock.index:
-            if ((df_stock.iloc[i]["Open"] > df_stock.iloc[i-1][f"ema_{ema1}"]) & (df_stock.iloc[i]["Open"] > df_stock.iloc[i-1][f"ema_{ema2}"]) & 
+            if ((df_stock.iloc[i]["Open"] > df_stock.iloc[i][f"ema_{ema1}"]) & (df_stock.iloc[i]["Open"] > df_stock.iloc[i][f"ema_{ema2}"]) & 
                 (df_stock.iloc[i-1]["Close"] < df_stock.iloc[i-1][f"ema_{ema1}"]) & (df_stock.iloc[i-1]["Close"] < df_stock.iloc[i-1][f"ema_{ema2}"])):
                 signal_list.append(1.0) 
             else:
@@ -94,7 +94,7 @@ def price_hbb_cross(df_stock, window, std):
     
     for i in df_stock.index:
         if i-1 in df_stock.index:
-            if ((df_stock.iloc[i]["Open"] > df_stock.iloc[i-1][f"upper_bb_{window}"]) & 
+            if ((df_stock.iloc[i]["Open"] > df_stock.iloc[i][f"upper_bb_{window}"]) & 
                (df_stock.iloc[i-1]["Close"] < df_stock.iloc[i-1][f"upper_bb_{window}"])):
                 signal_list.append(1.0)
             else:

@@ -6,18 +6,19 @@ from geneticalgo.trading.objective import net_return, stock_return
 from geneticalgo.trading.objective import signal_table
 import pandas as pd
 
-
-df_sp=pd.read_csv("../data/2021-12-06_Top25 SP500 daily.csv")
-# Path for running code via notebook
 # df_sp=pd.read_csv("../data/2021-12-06_Top25 SP500 daily.csv")
-df_sp["datadate"] = pd.to_datetime(df_sp["datadate"].astype(str), format='%Y%m%d')
-df_sp = df_sp[["datadate", "conm", "tic", "prcod", "prccd", "prchd", "prcld", "cshtrd"]].rename(columns={"prcod": "Open", "prccd": "Close", "prchd": "High", "prcld": "Low", "cshtrd": "Volume"})
-df_stock = df_sp[df_sp["tic"]=="AAL"]
-df_stock = df_stock.drop(columns=["conm", "tic"])
-df_stock = df_stock.sort_values(by="datadate")
-df_stock.reset_index(inplace=True, drop=True)
+# # Path for running code via notebook
+# # df_sp=pd.read_csv("../data/2021-12-06_Top25 SP500 daily.csv")
+# df_sp["datadate"] = pd.to_datetime(df_sp["datadate"].astype(str), format='%Y%m%d')
+# df_sp = df_sp[["datadate", "conm", "tic", "prcod", "prccd", "prchd", "prcld", "cshtrd"]].rename(columns={"prcod": "Open", "prccd": "Close", "prchd": "High", "prcld": "Low", "cshtrd": "Volume"})
+# df_stock = df_sp[df_sp["tic"]=="AAL"]
+# df_stock = df_stock.drop(columns=["conm", "tic"])
+# df_stock = df_stock.sort_values(by="datadate")
+# df_stock.reset_index(inplace=True, drop=True)
 
-df_stock, encoding = signal_table(df_stock)
+# df_stock, encoding = signal_table(df_stock)
+
+# df_period = df_stock.iloc[:, : int(0.75*len(df_stock))]
 
 
 # objective function
@@ -25,7 +26,8 @@ def onemax(x):
 	return -sum(x)
 
 
-def fitness(genome):
+# objective function using the stock return
+def fitness(genome, df_stock, encoding):
 
 	# TODO Random stock and timeframe
 	
@@ -73,17 +75,17 @@ def mutation(bitstring, r_mut):
 
 
 # genetic algorithm
-def genetic_algorithm(objective, n_bits, n_iter, n_pop, r_cross, r_mut):
+def genetic_algorithm(objective, n_bits, n_iter, n_pop, r_cross, r_mut, df_stock, encoding):
 	# initial population of random bitstring
 	pop = [randint(0, 2, n_bits).tolist() for _ in range(n_pop)]
 	# keep track of best solution
-	best, best_eval = 0, objective(pop[0])
+	best, best_eval = pop[0], objective(pop[0], df_stock, encoding)
 	progress = []
 	# enumerate generations
 	for gen in range(n_iter):
 		print(f">Generation {gen}")
 		# evaluate all candidates in the population
-		scores = [objective(c) for c in pop]
+		scores = [objective(c, df_stock, encoding) for c in pop]
 		# check for new best solution
 		for i in range(n_pop):
 			if scores[i] > best_eval:

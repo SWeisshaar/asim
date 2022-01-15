@@ -76,7 +76,7 @@ def buy_signal(index, df_signal, indicators):
     
     if number_of_indicators != 0:
         for ind in indicators:
-            if df_signal.iloc[index][ind] != 1.0:
+            if df_signal.loc[index][ind] != 1.0:
                 counter += 1
 
                 if counter > ((1 - percentage) * number_of_indicators):
@@ -132,13 +132,13 @@ def stock_return(genome, df_signal, encoding):
 
             transactions += 1
             
-            price_buy = df_signal.iloc[i]["Typical_Price"]
+            price_buy = df_signal.loc[i]["Typical_Price"]
             
             list_signal.append(price_buy)
             
         elif(position > 0):
             
-            stock_return = (df_signal.iloc[i]["Typical_Price"] - price_buy)/price_buy
+            stock_return = (df_signal.loc[i]["Typical_Price"] - price_buy)/price_buy
             
             if not(stock_return < -1):
                 position_return = position * stock_return
@@ -171,8 +171,8 @@ def stock_return(genome, df_signal, encoding):
                 
         list_return.append(position)
 
-    if portfolio > 150:
-        print(f"Genome: {genome} with final porfolio value: {portfolio}, position: {position} and number of trades: {transactions}")
+    # if portfolio > 150:
+    #     print(f"Genome: {genome} with final porfolio value: {portfolio}, position: {position} and number of trades: {transactions}")
     
     return portfolio, list_return, list_signal
 
@@ -200,13 +200,13 @@ def net_return(genome, df_signal, encoding):
             
             transactions += 1
             
-            price_buy = df_signal.iloc[i]["Typical_Price"]
+            price_buy = df_signal.loc[i]["Typical_Price"]
             
             list_signal.append(price_buy)
             
         elif(position == True):
             
-            net_return = df_signal.iloc[i]["Typical_Price"] - price_buy
+            net_return = df_signal.loc[i]["Typical_Price"] - price_buy
             
             p = 0.05
             
