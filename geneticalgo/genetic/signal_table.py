@@ -27,7 +27,7 @@ def signal_table_for_ticker(ticker_list):
     df_sp = df_sp[["datadate", "conm", "tic", "prcod", "prccd", "prchd", "prcld", "cshtrd"]].rename(columns={"prcod": "Open", "prccd": "Close", "prchd": "High", "prcld": "Low", "cshtrd": "Volume"})
 
     for ticker in ticker_list:
-        df_stock = df_sp[df_sp["tic"]=="AAL"]
+        df_stock = df_sp[df_sp["tic"]==ticker]
         df_stock = df_stock.drop(columns=["conm", "tic"])
         df_stock = df_stock.sort_values(by="datadate")
         df_stock.reset_index(inplace=True, drop=True)
